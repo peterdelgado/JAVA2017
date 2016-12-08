@@ -60,7 +60,7 @@ public class IncidenciasXND {
     
     public boolean validarEmpleado(Empleado empleados) throws XMLDBException{
         
-               String consulta = "for $p in //Empleados/empleado/nombreUsuario return $p";
+               String consulta = "for $p in //Empleados/empleado/nombreUsuario/text() for $w in //Empleados/empleado/password/text() return concat($p, \":\", $w)";
                 
                        
                ResourceSet resultado = ejecutarConsultaXQuery(colecEmpleados, consulta);
@@ -69,13 +69,22 @@ public class IncidenciasXND {
                 while (iterador.hasMoreResources()) {
                
                     XMLResource res = (XMLResource) iterador.nextResource();
-                    Node nodo = res.getContentAsDOM();
-                    System.out.println(nodo.getNodeName());
-                    NodeList hijo = nodo.getChildNodes();
-                    NodeList datosEmp = hijo.item(0).getChildNodes();
-                    Empleado l = leerDomEmpleados(datosEmp);
                     
-                    if (l.equals(empleados.getNombreUsuario())) {
+                 
+                    
+//                    Node nodo = res.getContentAsDOM();
+//                    System.out.println(nodo.getNodeName());
+//                    NodeList hijo = nodo.getChildNodes();
+//                    NodeList datosEmp = hijo.item(0).getChildNodes();
+//                    Empleado l = leerDomEmpleados(datosEmp);
+                    
+//                    System.out.println(empleados.getNombreUsuario());
+                    
+                    String test = empleados.getNombreUsuario() + ":"    + empleados.getPassword();
+                    
+                   
+                    
+                    if (res.getContent().equals(test))  {
                    
                    
                    System.out.println("Empleado Validado");
@@ -100,26 +109,35 @@ public class IncidenciasXND {
             Node ntemp = datos.item(i);
             if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
                 
-                        l.setNombreUsuario(ntemp.getChildNodes().item(0).getNodeValue());
-                        
+                      switch (contador) {
+                    case 1:
+                       l.setNombreUsuario(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador ++;
+                        break;
+                    case 2:
+                         
+                         l.setPassword(ntemp.getChildNodes().item(0).getNodeValue());
+                         contador++;
+                        break;   
+                    }
+            }
+        
+     
+     }
+        return l;
+     }
+      
                         
                         
                        
+                             
                         
-                        
-                        
-                        
-                    
-                   
-                }
-            }
-        return l;
+               
+         
+      
      
-     }
-        
-    
-  public List<Incidencia> selectAllLibros() throws XMLDBException {
-        String consulta = "for $l in //Libros/Libro return $l";
+     public List<Incidencia> selectAllIncidencias() throws XMLDBException {
+        String consulta = "for $l in //Incidencias/incidencia return $l";
         ResourceSet resultado = ejecutarConsultaXQuery(colecIncidencias, consulta);
         ResourceIterator iterador = resultado.getIterator();
         List<Incidencia> todosIncidencias = new ArrayList<>();
@@ -162,12 +180,11 @@ public class IncidenciasXND {
                         contador++;
                         break;
                     case 4:
-                       
-                        l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                       l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
                         contador++;
                         break;
                     case 5:
-                        l.setTipo(null);
+                        l.setTipo(ntemp.getChildNodes().item(0).getNodeValue());
                         contador++;
                         break;
                     default:
