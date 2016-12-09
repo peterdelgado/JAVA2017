@@ -60,46 +60,33 @@ public class IncidenciasXND {
     
     public boolean validarEmpleado(Empleado empleados) throws XMLDBException{
         
-               String consulta = "for $p in //Empleados/empleado/nombreUsuario/text() for $w in //Empleados/empleado/password/text() return concat($p, \":\", $w)";
+    String consulta = "for $p in //Empleados/empleado/nombreUsuario/text() for $w in //Empleados/empleado/password/text() return concat($p, \":\", $w)";
                 
                        
-               ResourceSet resultado = ejecutarConsultaXQuery(colecEmpleados, consulta);
+    ResourceSet resultado = ejecutarConsultaXQuery(colecEmpleados, consulta);
                ResourceIterator iterador = resultado.getIterator();
         
                 while (iterador.hasMoreResources()) {
                
                     XMLResource res = (XMLResource) iterador.nextResource();
                     
-                 
-                    
-//                    Node nodo = res.getContentAsDOM();
-//                    System.out.println(nodo.getNodeName());
-//                    NodeList hijo = nodo.getChildNodes();
-//                    NodeList datosEmp = hijo.item(0).getChildNodes();
-//                    Empleado l = leerDomEmpleados(datosEmp);
-                    
-//                    System.out.println(empleados.getNombreUsuario());
-                    
                     String test = empleados.getNombreUsuario() + ":"    + empleados.getPassword();
-                    
-                   
-                    
                     if (res.getContent().equals(test))  {
                    
                    
-                   System.out.println("Empleado Validado");
+
                    return true;
                    
                }
   
-               else {
-                   
-                   System.out.println("Empleado No Validado");
-               }
+              
                 }
     
     return false;
     }
+                   
+                    
+                    
     
     
      private Empleado leerDomEmpleados(NodeList datos) {
@@ -145,7 +132,7 @@ public class IncidenciasXND {
             XMLResource res = (XMLResource) iterador.nextResource();
 //             Tenemos que leer el resultado como un DOM
             Node nodo = res.getContentAsDOM();
-            System.out.println(nodo.getNodeName());
+
 //             Leemos la lista de hijos que son tipo Libro
             NodeList hijo = nodo.getChildNodes();
 //             Leemos los hijos del Libro
@@ -156,6 +143,18 @@ public class IncidenciasXND {
         return todosIncidencias;
     }
 
+     
+     
+     
+     
+    
+     
+     
+     
+//     
+     
+     
+     
     // M?todo auxiliar que lee los datos de un Libro
     private Incidencia leerDomIncidencias(NodeList datos) {
         int contador = 1;
@@ -195,8 +194,14 @@ public class IncidenciasXND {
         return l;
     }  
     
+//     
     
-    
+    public boolean ModificarEmpleado(String e, String b ) throws XMLDBException {
+        String r = "update value //nombreCompleto[. =  '" +e+ "'] with  '"+b+"' ";
+              
+        ejecutarConsultaUpdate(colecEmpleados, r);
+     return true;
+    }
     
     
     private ResourceSet ejecutarConsultaXQuery(String coleccion, String consulta) throws XMLDBException {
