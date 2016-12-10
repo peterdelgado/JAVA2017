@@ -203,7 +203,9 @@ public class IncidenciasXND {
     }
     
     public boolean EliminarEmpleado(Empleado a) throws XMLDBException {
-    String t =    "for $empleado in //nombreCompleto where $empleado = '" +a.getNombreCompleto()+ "' return update delete $empleado";
+    String t = "for $empleado in /Empleados/empleado[nombreCompleto = '" +a.getNombreCompleto()+ "']  return update delete $empleado";
+
+         
     ejecutarConsultaUpdate(colecEmpleados, t);
      return true;
     }
