@@ -20,7 +20,7 @@ public class TestXND {
         
             IncidenciasXND gestor = new IncidenciasXND();
             System.out.println("Conexion establecida.");
-            Empleado a = new Empleado("Fbarnes", "p", "crap", "111111");
+            Empleado a = new Empleado("Fbarnes", "p", "Jimmy Choo", "111111");
             Empleado b = new Empleado("Fbarnes", "p", "FredBarnes", "1111111");
             
                     
@@ -51,15 +51,35 @@ public class TestXND {
         }
         System.out.println("\n*************************************************\n");
    
+    
+        System.out.println("Test:  Modificando password...");
+        if (gestor.ModificarPassword(a, "end")){
+        
+        System.out.println("Datos modificados.");
+        
+        
+    }
    
-   
-   
+    System.out.println("\n*************************************************\n");
+    
+    
+    System.out.println("Test:  borrando emplead...");
+        if (gestor.EliminarEmpleado(a)){
+        
+        System.out.println("Datos borrados.");
+        
+        
+    }
+    
    
    List<Incidencia> incidencias = gestor.selectAllIncidencias();
             System.out.println(incidencias);
             
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | XMLDBException ex) {
             System.out.println("Error con la BBDD: " + ex.getMessage());
+      
         }
+   
+    System.out.println("\n*************************************************\n");
     }
 }

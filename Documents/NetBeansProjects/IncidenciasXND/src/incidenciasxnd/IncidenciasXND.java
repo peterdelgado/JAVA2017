@@ -59,24 +59,18 @@ public class IncidenciasXND {
     }
     
     public boolean validarEmpleado(Empleado empleados) throws XMLDBException{
-        
     String consulta = "for $p in //Empleados/empleado/nombreUsuario/text() for $w in //Empleados/empleado/password/text() return concat($p, \":\", $w)";
-                
-                       
-    ResourceSet resultado = ejecutarConsultaXQuery(colecEmpleados, consulta);
-               ResourceIterator iterador = resultado.getIterator();
-        
-                while (iterador.hasMoreResources()) {
-               
-                    XMLResource res = (XMLResource) iterador.nextResource();
+        ResourceSet resultado = ejecutarConsultaXQuery(colecEmpleados, consulta);
+        ResourceIterator iterador = resultado.getIterator();
+        while (iterador.hasMoreResources()) {
+        XMLResource res = (XMLResource) iterador.nextResource();
                     
-                    String test = empleados.getNombreUsuario() + ":"    + empleados.getPassword();
+                    String test = empleados.getNombreUsuario() + ":"+ empleados.getPassword();
                     if (res.getContent().equals(test))  {
                    
-                   
-
                    return true;
-                   
+                          
+                    
                }
   
               
@@ -89,31 +83,31 @@ public class IncidenciasXND {
                     
     
     
-     private Empleado leerDomEmpleados(NodeList datos) {
-        int contador = 1;
-        Empleado l = new Empleado();
-        for (int i = 0; i < datos.getLength(); i++) {
-            Node ntemp = datos.item(i);
-            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
-                
-                      switch (contador) {
-                    case 1:
-                       l.setNombreUsuario(ntemp.getChildNodes().item(0).getNodeValue());
-                        contador ++;
-                        break;
-                    case 2:
-                         
-                         l.setPassword(ntemp.getChildNodes().item(0).getNodeValue());
-                         contador++;
-                        break;   
-                    }
-            }
-        
+//     private Empleado leerDomEmpleados(NodeList datos) {
+//        int contador = 1;
+//        Empleado l = new Empleado();
+//        for (int i = 0; i < datos.getLength(); i++) {
+//            Node ntemp = datos.item(i);
+//            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
+//                
+//                      switch (contador) {
+//                    case 1:
+//                       l.setNombreUsuario(ntemp.getChildNodes().item(0).getNodeValue());
+//                        contador ++;
+//                        break;
+//                    case 2:
+//                         
+//                         l.setPassword(ntemp.getChildNodes().item(0).getNodeValue());
+//                         contador++;
+//                        break;   
+//                    }
+//            }
+//        
      
-     }
-        return l;
-     }
-      
+//     }
+////        return l;
+//     }
+//      
                         
                         
                        
@@ -174,7 +168,7 @@ public class IncidenciasXND {
                          contador++;
                         break;
                     case 3:
-                        Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                         Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
                         l.setDestino(b);
                         contador++;
                         break;
@@ -194,14 +188,26 @@ public class IncidenciasXND {
         return l;
     }  
     
-//     
+
     
     public boolean ModificarEmpleado(String e, String b ) throws XMLDBException {
         String r = "update value //nombreCompleto[. =  '" +e+ "'] with  '"+b+"' ";
-              
         ejecutarConsultaUpdate(colecEmpleados, r);
      return true;
     }
+    
+     public boolean ModificarPassword(Empleado a, String c ) throws XMLDBException {
+        String z = "update value /Empleados/empleado[nombreCompleto =  '" +a.getNombreCompleto()+ "']/password with  '"+c+"' ";
+        ejecutarConsultaUpdate(colecEmpleados, z);
+     return true;
+    }
+    
+    public boolean EliminarEmpleado(Empleado a) throws XMLDBException {
+    String t =    "for $empleado in //nombreCompleto where $empleado = '" +a.getNombreCompleto()+ "' return update delete $empleado";
+    ejecutarConsultaUpdate(colecEmpleados, t);
+     return true;
+    }
+    
     
     
     private ResourceSet ejecutarConsultaXQuery(String coleccion, String consulta) throws XMLDBException {
@@ -210,9 +216,6 @@ public class IncidenciasXND {
         return resultado;
     }
 
-    
-    
-	
     private void ejecutarConsultaUpdate(String coleccion, String consulta) throws XMLDBException {
         XQueryService servicio = prepararConsulta(coleccion);
         CompiledExpression consultaCompilada = servicio.compile(consulta);
