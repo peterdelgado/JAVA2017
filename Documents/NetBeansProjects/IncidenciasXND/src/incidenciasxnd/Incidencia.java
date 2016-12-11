@@ -16,11 +16,14 @@ public class Incidencia {
     private String fechaHora;
     private String detalle;
     private String tipo;
-
+    
+    
+    
     public Incidencia() {
     }
 
     public Incidencia(int id, Empleado origen, Empleado destino, String fechaHora, String detalle, String tipo) {
+       
         this.id = id;
         this.origen = origen;
         this.destino = destino;

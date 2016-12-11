@@ -23,13 +23,17 @@ import org.xmldb.api.modules.XQueryService;
 import org.xmldb.api.modules.*;
 import org.xmldb.api.base.*;
 import org.xmldb.api.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
 /**
  *
  * @author pedro
  */
 public class IncidenciasXND {
     
-    
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     
     private final Database database;
     private final String uri = "xmldb:exist://localhost:8080/exist/xmlrpc";
@@ -37,6 +41,7 @@ public class IncidenciasXND {
     private final String pass = "live1234";
     private final String colecEmpleados = "/db/DBIncidencias/Empleados";
     private final String colecIncidencias = "/db/DBIncidencias/Incidencias";
+    private final String colecHistorial = "/dv/DBIncidencias/Historial";
 
     public IncidenciasXND() throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
         
@@ -65,10 +70,15 @@ public class IncidenciasXND {
         while (iterador.hasMoreResources()) {
         XMLResource res = (XMLResource) iterador.nextResource();
                     
-                    String test = empleados.getNombreUsuario() + ":"+ empleados.getPassword();
-                    if (res.getContent().equals(test))  {
-                   
-                   return true;
+                String test = empleados.getNombreUsuario() + ":"+ empleados.getPassword();
+                if (res.getContent().equals(test))  {
+                Historial h = new Historial("I",sdf.format(new Date()),empleados);
+                String insertarHist = "update insert <incidencia> <tipo>" + h.getTipo() + "</tipo>"
+                + "<fechayHora>" + h.getFechaHora()+  "</fechayHora>"
+                + "<nombreUsuario>" + h.getEmpleado() + "</nombreUsuario></incidencia> into /Incidencias";
+                ejecutarConsultaUpdate(colecEmpleados, consulta); 
+                ejecutarConsultaUpdate(colecHistorial, insertarHist);
+                 return true;
                           
                     
                }
@@ -83,31 +93,7 @@ public class IncidenciasXND {
                     
     
     
-//     private Empleado leerDomEmpleados(NodeList datos) {
-//        int contador = 1;
-//        Empleado l = new Empleado();
-//        for (int i = 0; i < datos.getLength(); i++) {
-//            Node ntemp = datos.item(i);
-//            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
-//                
-//                      switch (contador) {
-//                    case 1:
-//                       l.setNombreUsuario(ntemp.getChildNodes().item(0).getNodeValue());
-//                        contador ++;
-//                        break;
-//                    case 2:
-//                         
-//                         l.setPassword(ntemp.getChildNodes().item(0).getNodeValue());
-//                         contador++;
-//                        break;   
-//                    }
-//            }
-//        
-     
-//     }
-////        return l;
-//     }
-//      
+
                         
                         
                        
@@ -137,9 +123,63 @@ public class IncidenciasXND {
         return todosIncidencias;
     }
 
+    public List<Incidencia> selectIncidenciaID(int id) throws XMLDBException {
+        String consulta = "for $l in /Incidencias/incidencia[intid = '" + id + "'] return $l";
+        ResourceSet resultado = ejecutarConsultaXQuery(colecIncidencias, consulta);
+        ResourceIterator iterador = resultado.getIterator();
+        List<Incidencia> unaIncidencia = new ArrayList<>();
+        while (iterador.hasMoreResources()) {
+            XMLResource res = (XMLResource) iterador.nextResource();
+//             Tenemos que leer el resultado como un DOM
+            Node nodo = res.getContentAsDOM();
+
+//             Leemos la lista de hijos que son tipo Libro
+            NodeList hijo = nodo.getChildNodes();
+//             Leemos los hijos del Libro
+            NodeList datosLibro = hijo.item(0).getChildNodes();
+            Incidencia l = leerDomIncidencia(datosLibro);
+            unaIncidencia.add(l);
+        }
+        return unaIncidencia;
+    } 
      
-     
-     
+     private Incidencia leerDomIncidencia(NodeList datos) {
+        int contador = 1;
+        Incidencia l = new Incidencia();
+        for (int i = 0; i < datos.getLength(); i++) {
+            Node ntemp = datos.item(i);
+            
+            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
+                switch (contador) {
+                    case 1:
+                        l.setId(Integer.parseInt(ntemp.getChildNodes().item(0).getNodeValue()));
+                        contador ++;
+                        break;
+                    case 2:
+                         Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                         l.setOrigen(a);
+                         contador++;
+                        break;
+                    case 3:
+                         Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                        l.setDestino(b);
+                        contador++;
+                        break;
+                    case 4:
+                       l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        break;
+                    case 5:
+                        l.setTipo(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return l;
+    }  
      
     
      
@@ -204,11 +244,12 @@ public class IncidenciasXND {
     
     public boolean EliminarEmpleado(Empleado a) throws XMLDBException {
     String t = "for $empleado in /Empleados/empleado[nombreCompleto = '" +a.getNombreCompleto()+ "']  return update delete $empleado";
-
-         
     ejecutarConsultaUpdate(colecEmpleados, t);
      return true;
     }
+    
+    
+    public boolean insertarIncidencia(Incidencia i) {
     
     
     

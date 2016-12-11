@@ -70,16 +70,31 @@ public class TestXND {
         
         
     }
-    
+    System.out.println("\n*************************************************\n");
    
    List<Incidencia> incidencias = gestor.selectAllIncidencias();
             System.out.println(incidencias);
+         
+            
+    System.out.println("\n*************************************************\n");           
+            
+            
+            
+            
+    List<Incidencia> incidenciaId = gestor.selectIncidenciaID(2);
+            System.out.println(incidenciaId);      
+            
+            
+            
+          
+            
             
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | XMLDBException ex) {
             System.out.println("Error con la BBDD: " + ex.getMessage());
       
         }
    
-    System.out.println("\n*************************************************\n");
+   
     }
 }
+
