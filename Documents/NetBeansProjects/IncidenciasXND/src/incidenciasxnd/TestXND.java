@@ -22,7 +22,7 @@ public class TestXND {
             System.out.println("Conexion establecida.");
             Empleado a = new Empleado("Fbarnes", "p", "Jimmy Choo", "111111");
             Empleado b = new Empleado("Fbarnes", "p", "FredBarnes", "1111111");
-            
+            Incidencia i = new Incidencia(3, a, b,"12/12/16", "una nueva incidencia", "U");
                     
 //            gestor.insertarEmpleado(a);
 //            System.out.println("Empleado insertado");
@@ -86,9 +86,21 @@ public class TestXND {
             
             
             
-          
+  System.out.println("\n*************************************************\n");           
+  System.out.println("Insertando Incidencia");
+  
+//            gestor.insertarIncidencia(i);
             
-            
+  System.out.println("\n*************************************************\n");             
+         
+    System.out.println("El total de Incidencias en la BD es:" + gestor.countAllIncidencias());
+  
+   System.out.println("\n*************************************************\n");  
+   
+   System.out.println ("Obtener las incidencias para un empleado a partir de un objeto de clase Empleado.");
+   
+   System.out.println(gestor.selectIncidenciaEmpleado(a));
+   
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | XMLDBException ex) {
             System.out.println("Error con la BBDD: " + ex.getMessage());
       

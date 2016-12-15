@@ -156,22 +156,27 @@ public class IncidenciasXND {
                         contador ++;
                         break;
                     case 2:
-                         Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                       l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                       contador++;
+                       break;
+                    case 3:
+                        Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
                          l.setOrigen(a);
                          contador++;
                         break;
-                    case 3:
-                         Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                    case 4:
+                       Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
                         l.setDestino(b);
                         contador++;
                         break;
-                    case 4:
-                       l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                    case 5:
+                        l.setDetalle(ntemp.getChildNodes().item(0).getNodeValue());
                         contador++;
                         break;
-                    case 5:
+                    case 6:
                         l.setTipo(ntemp.getChildNodes().item(0).getNodeValue());
                         contador++;
+                        
                         break;
                     default:
                         break;
@@ -203,20 +208,24 @@ public class IncidenciasXND {
                         contador ++;
                         break;
                     case 2:
-                         Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                        l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        break;
+                    case 3:
+                        Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
                          l.setOrigen(a);
                          contador++;
                         break;
-                    case 3:
-                         Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                    case 4:
+                       Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
                         l.setDestino(b);
                         contador++;
                         break;
-                    case 4:
-                       l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                    case 5:
+                        l.setDetalle(ntemp.getChildNodes().item(0).getNodeValue());
                         contador++;
                         break;
-                    case 5:
+                    case 6:
                         l.setTipo(ntemp.getChildNodes().item(0).getNodeValue());
                         contador++;
                         break;
@@ -249,10 +258,107 @@ public class IncidenciasXND {
     }
     
     
-    public boolean insertarIncidencia(Incidencia i) {
+    public boolean insertarIncidencia(Incidencia i) throws XMLDBException {
+        String incidencia = "update insert <incidencia> <intid>" + i.getId() + "</intid>" + "<fechayhoracreacion>" + i.getFechaHora() + "</fechayhoracreacion>"
+                + "<origen>" + i.getOrigen() + "</origen>" + "<destino>" + i.getDestino() + "</destino>" + "<detalle>" + i.getDetalle() + "</detalle>" + "<tipo>" + i.getTipo() + "</tipo></incidencia> into /Incidencias";
+        ejecutarConsultaUpdate(colecIncidencias, incidencia);
+        
+        return true;
+    }
     
     
     
+    public int countAllIncidencias() throws XMLDBException {
+        String count = "for $l in //Incidencias/incidencia return $l";
+        ResourceSet resultado = ejecutarConsultaXQuery(colecIncidencias, count);
+        ResourceIterator iterador = resultado.getIterator();
+        int counter = 0;
+        while (iterador.hasMoreResources()) {
+            
+            XMLResource res = (XMLResource) iterador.nextResource();
+//             Tenemos que leer el resultado como un DOM
+            Node nodo = res.getContentAsDOM();
+
+//             Leemos la lista de hijos que son tipo Libro
+            NodeList hijo = nodo.getChildNodes();
+//             Leemos los hijos del Libro
+            NodeList datosLibro = hijo.item(0).getChildNodes();
+            Incidencia l = leerDomAllIncidencias(datosLibro);
+            
+          
+           System.out.println(l);
+             
+           counter++;
+            
+        
+        
+        
+    }
+       return counter; 
+    }
+       
+    private Incidencia leerDomAllIncidencias(NodeList datos) {
+        int contador = 1;
+        Incidencia l = new Incidencia();
+        for (int i = 0; i < datos.getLength(); i++) {
+            Node ntemp = datos.item(i);
+            
+            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
+                switch (contador) {
+                    case 1:
+                        l.setId(Integer.parseInt(ntemp.getChildNodes().item(0).getNodeValue()));
+                        contador ++;
+                        break;
+                    case 2:
+                          l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        
+                        break;
+                    case 3:
+                        Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                         l.setOrigen(a);
+                         contador++;
+                        break;
+                    case 4:
+                       Empleado b = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                        l.setDestino(b);
+                        contador++;
+                        break;
+                    case 5:
+                        l.setDetalle(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        break;
+                    case 6:
+                        l.setTipo(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return l;
+    }  
+       
+    
+    
+    public List<Incidencia> selectIncidenciaEmpleado(Empleado empleado) throws XMLDBException {
+        String consulta = "for $l in /Incidencias/incidencia[origen = '" + empleado.getNombreUsuario() + "'] return $l";
+        ResourceSet resultado = ejecutarConsultaXQuery(colecIncidencias, consulta);
+        ResourceIterator iterador = resultado.getIterator();
+        List<Incidencia> unaIncidencia = new ArrayList<>();
+        while (iterador.hasMoreResources()) {
+            XMLResource res = (XMLResource) iterador.nextResource();
+           Node nodo = res.getContentAsDOM();
+            NodeList hijo = nodo.getChildNodes();
+            NodeList datosLibro = hijo.item(0).getChildNodes();
+            Incidencia l = leerDomIncidencia(datosLibro);
+            unaIncidencia.add(l);
+        }
+        return unaIncidencia;
+    } 
+                 
+                 
     private ResourceSet ejecutarConsultaXQuery(String coleccion, String consulta) throws XMLDBException {
         XQueryService servicio = prepararConsulta(coleccion);
         ResourceSet resultado = servicio.query(consulta);
