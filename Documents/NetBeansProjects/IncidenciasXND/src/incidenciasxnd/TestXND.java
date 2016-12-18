@@ -22,7 +22,7 @@ public class TestXND {
             System.out.println("Conexion establecida.");
             Empleado a = new Empleado("Fbarnes", "p", "Jimmy Choo", "111111");
             Empleado b = new Empleado("Fbarnes", "p", "FredBarnes", "1111111");
-            Incidencia i = new Incidencia(3, a, b,"12/12/16", "una nueva incidencia", "U");
+            Incidencia i = new Incidencia(4, a, b,"12/12/16", "una nueva incidencia urgente", "U");
                     
 //            gestor.insertarEmpleado(a);
 //            System.out.println("Empleado insertado");
@@ -72,15 +72,15 @@ public class TestXND {
     }
     System.out.println("\n*************************************************\n");
    
-   List<Incidencia> incidencias = gestor.selectAllIncidencias();
-            System.out.println(incidencias);
+            System.out.println("Todas las Incidencias");
+            System.out.println(gestor.selectAllIncidencias());
          
             
     System.out.println("\n*************************************************\n");           
             
             
             
-            
+    System.out.println("Elegir Incidencia por ID");        
     List<Incidencia> incidenciaId = gestor.selectIncidenciaID(2);
             System.out.println(incidenciaId);      
             
@@ -89,7 +89,7 @@ public class TestXND {
   System.out.println("\n*************************************************\n");           
   System.out.println("Insertando Incidencia");
   
-//            gestor.insertarIncidencia(i);
+            gestor.insertarIncidencia(i);
             
   System.out.println("\n*************************************************\n");             
          
@@ -99,7 +99,15 @@ public class TestXND {
    
    System.out.println ("Obtener las incidencias para un empleado a partir de un objeto de clase Empleado.");
    
-   System.out.println(gestor.selectIncidenciaEmpleado(a));
+//   System.out.println(gestor.selectIncidenciaEmpleado(a));
+   
+   
+    System.out.println("\n*************************************************\n");  
+    
+    System.out.println("Empleados que han consultado sus incidencias:");
+    System.out.println(gestor.selectConsultaEmpleado());
+    
+     System.out.println("\n*************************************************\n");  
    
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | XMLDBException ex) {
             System.out.println("Error con la BBDD: " + ex.getMessage());

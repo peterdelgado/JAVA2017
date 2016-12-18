@@ -41,7 +41,7 @@ public class IncidenciasXND {
     private final String pass = "live1234";
     private final String colecEmpleados = "/db/DBIncidencias/Empleados";
     private final String colecIncidencias = "/db/DBIncidencias/Incidencias";
-    private final String colecHistorial = "/dv/DBIncidencias/Historial";
+    private final String colecHistorial = "/db/DBIncidencias/Historial";
 
     public IncidenciasXND() throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
         
@@ -73,9 +73,9 @@ public class IncidenciasXND {
                 String test = empleados.getNombreUsuario() + ":"+ empleados.getPassword();
                 if (res.getContent().equals(test))  {
                 Historial h = new Historial("I",sdf.format(new Date()),empleados);
-                String insertarHist = "update insert <incidencia> <tipo>" + h.getTipo() + "</tipo>"
+                String insertarHist = "update insert <historial> <tipo>" + h.getTipo() + "</tipo>"
                 + "<fechayHora>" + h.getFechaHora()+  "</fechayHora>"
-                + "<nombreUsuario>" + h.getEmpleado() + "</nombreUsuario></incidencia> into /Incidencias";
+                + "<nombreUsuario>" + h.getEmpleado() + "</nombreUsuario></historial> into /Historial";
                 ejecutarConsultaUpdate(colecEmpleados, consulta); 
                 ejecutarConsultaUpdate(colecHistorial, insertarHist);
                  return true;
@@ -190,11 +190,11 @@ public class IncidenciasXND {
      
      
      
-//     
+    
      
      
      
-    // M?todo auxiliar que lee los datos de un Libro
+    
     private Incidencia leerDomIncidencias(NodeList datos) {
         int contador = 1;
         Incidencia l = new Incidencia();
@@ -262,6 +262,14 @@ public class IncidenciasXND {
         String incidencia = "update insert <incidencia> <intid>" + i.getId() + "</intid>" + "<fechayhoracreacion>" + i.getFechaHora() + "</fechayhoracreacion>"
                 + "<origen>" + i.getOrigen() + "</origen>" + "<destino>" + i.getDestino() + "</destino>" + "<detalle>" + i.getDetalle() + "</detalle>" + "<tipo>" + i.getTipo() + "</tipo></incidencia> into /Incidencias";
         ejecutarConsultaUpdate(colecIncidencias, incidencia);
+        
+         if (i.getTipo().equals("U")){
+         Historial h = new Historial("U",sdf.format(new Date()),i.getOrigen());
+                String insertarHistU = "update insert <historial> <tipo>" + h.getTipo() + "</tipo>"
+                + "<fechayHora>" + h.getFechaHora()+  "</fechayHora>"
+                + "<nombreUsuario>" + h.getEmpleado() + "</nombreUsuario></historial> into /Historial";
+               ejecutarConsultaUpdate(colecHistorial, insertarHistU);
+         }
         
         return true;
     }
@@ -349,7 +357,14 @@ public class IncidenciasXND {
         List<Incidencia> unaIncidencia = new ArrayList<>();
         while (iterador.hasMoreResources()) {
             XMLResource res = (XMLResource) iterador.nextResource();
-           Node nodo = res.getContentAsDOM();
+            Historial h = new Historial("C",sdf.format(new Date()),empleado);
+                String insertarHistC = "update insert <historial> <tipo>" + h.getTipo() + "</tipo>"
+                + "<fechayHora>" + h.getFechaHora()+  "</fechayHora>"
+                + "<nombreUsuario>" + h.getEmpleado() + "</nombreUsuario></historial> into /Historial";
+               ejecutarConsultaUpdate(colecHistorial, insertarHistC);
+            
+            
+            Node nodo = res.getContentAsDOM();
             NodeList hijo = nodo.getChildNodes();
             NodeList datosLibro = hijo.item(0).getChildNodes();
             Incidencia l = leerDomIncidencia(datosLibro);
@@ -357,7 +372,82 @@ public class IncidenciasXND {
         }
         return unaIncidencia;
     } 
-                 
+           
+    public List<Historial> selectConsultaEmpleado() throws XMLDBException {
+        String consultaHistorial = "for $l in /Historial/historial[tipo = 'C'] return $l";
+        ResourceSet resultado = ejecutarConsultaXQuery(colecHistorial, consultaHistorial);
+        ResourceIterator iterador = resultado.getIterator();
+        List<Historial> unHistorial = new ArrayList<>();
+        while (iterador.hasMoreResources()) {
+            XMLResource res = (XMLResource) iterador.nextResource();
+                        
+            
+            Node nodo = res.getContentAsDOM();
+            NodeList hijo = nodo.getChildNodes();
+            NodeList datosLibro = hijo.item(0).getChildNodes();
+            Historial k = leerDomAllHistorial(datosLibro);
+            unHistorial.add(k);
+        }
+        return unHistorial;
+    } 
+    
+    private Historial leerDomAllHistorial(NodeList datos) {
+        int contador = 1;
+        Historial l = new Historial();
+        for (int i = 0; i < datos.getLength(); i++) {
+            Node ntemp = datos.item(i);
+            
+            if (ntemp.getNodeType() == Node.ELEMENT_NODE) {
+                switch (contador) {
+                    case 1:
+                        l.setTipo(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador ++;
+                        break;
+                    case 2:
+                          l.setFechaHora(ntemp.getChildNodes().item(0).getNodeValue());
+                        contador++;
+                        
+                        break;
+                    case 3:
+                        Empleado a = new Empleado(ntemp.getChildNodes().item(0).getNodeValue());
+                         l.setEmpleado(a);
+                         contador++;
+                        break;
+                    
+                    
+                    
+                    default:
+                        break;
+                }
+            }
+        }
+        return l;
+    }  
+       
+    
+    
+    public List<Incidencia> selectIncidenciaEmpleadoy(Empleado empleado) throws XMLDBException {
+        String consulta = "for $l in /Incidencias/incidencia[origen = '" + empleado.getNombreUsuario() + "'] return $l";
+        ResourceSet resultado = ejecutarConsultaXQuery(colecIncidencias, consulta);
+        ResourceIterator iterador = resultado.getIterator();
+        List<Incidencia> unaIncidencia = new ArrayList<>();
+        while (iterador.hasMoreResources()) {
+            XMLResource res = (XMLResource) iterador.nextResource();
+            Historial h = new Historial("C",sdf.format(new Date()),empleado);
+                String insertarHistC = "update insert <historial> <tipo>" + h.getTipo() + "</tipo>"
+                + "<fechayHora>" + h.getFechaHora()+  "</fechayHora>"
+                + "<nombreUsuario>" + h.getEmpleado() + "</nombreUsuario></historial> into /Historial";
+               ejecutarConsultaUpdate(colecHistorial, insertarHistC);
+            
+            
+            Node nodo = res.getContentAsDOM();
+            NodeList hijo = nodo.getChildNodes();
+            NodeList datosLibro = hijo.item(0).getChildNodes();
+            Incidencia l = leerDomIncidencia(datosLibro);
+            unaIncidencia.add(l);
+        }
+        return unaIncidencia;
+    } 
                  
     private ResourceSet ejecutarConsultaXQuery(String coleccion, String consulta) throws XMLDBException {
         XQueryService servicio = prepararConsulta(coleccion);

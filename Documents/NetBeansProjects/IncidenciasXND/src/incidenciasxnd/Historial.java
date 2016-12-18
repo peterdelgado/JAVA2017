@@ -14,6 +14,11 @@ public class Historial {
     private String fechaHora;
     private Empleado empleado;
 
+    @Override
+    public String toString() {
+        return "Historial{" + "tipo=" + tipo + ", fechaHora=" + fechaHora + ", empleado=" + empleado + '}';
+    }
+
     public Historial() {
     }
 
