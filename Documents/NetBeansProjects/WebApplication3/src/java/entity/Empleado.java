@@ -157,9 +157,21 @@ public class Empleado implements Serializable {
         return true;
     }
 
-    @Override
+     @Override
     public String toString() {
-        return "entity.Empleado[ nombreusuario=" + nombreusuario + " ]";
+        return nombreusuario;
     }
+
+    public String todosDatos() {
+        return "Nombre usuario: " + nombreusuario + ", password: " + password + ", nombre completo: " + nombrecompleto + ", telefono: " + telefono;
+    }
+
+
+    
+
+   
+    
+    
+    
     
 }

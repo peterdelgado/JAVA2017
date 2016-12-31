@@ -3,7 +3,7 @@
   <persistence-unit name="WebApplication3PU" transaction-type="JTA">
     <jta-data-source>m06_incidencias</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <shared-cache-mode>NONE</shared-cache-mode>
+    <shared-cache-mode>ALL</shared-cache-mode>
     <properties>
     </properties>
   </persistence-unit>

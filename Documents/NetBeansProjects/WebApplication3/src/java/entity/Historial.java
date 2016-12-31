@@ -53,7 +53,8 @@ public class Historial implements Serializable {
     @JoinColumn(name = "empleado", referencedColumnName = "nombreusuario")
     @ManyToOne(optional = false)
     private Empleado empleado;
-   
+    
+    
     public Historial() {
     }
 
@@ -61,9 +62,9 @@ public class Historial implements Serializable {
         this.idevento = idevento;
     }
 
-    public Historial(Integer idevento, String tipo, String fechahora,Empleado empleado) {
+    public Historial(String tipo, String fechahora, Empleado empleado) {
         
-        this.idevento = idevento;
+        
         this.tipo = tipo;
         this.fechahora = fechahora;
         this.empleado = empleado;

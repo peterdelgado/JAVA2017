@@ -16,12 +16,14 @@ import java.util.List;
 import bean.NewSessionBean;
 import javax.ejb.EJB;
 import entity.Empleado;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
  *
  * @author pedro
  */
 public class NewServlet extends HttpServlet {
-     
+     private SimpleDateFormat sdf;
     
     @EJB
     NewSessionBean gestor;
@@ -52,39 +54,68 @@ public class NewServlet extends HttpServlet {
                 out.println("<p>" + c + "</p>");
             }             
    out.println("\n*************************************************\n");            
-             Empleado a = new Empleado("fito", "pez", "meme", "44444");
-             Empleado c = new Empleado("jvelasquez", "pope","Jose Velasquez", "2222");
+             Empleado a = new Empleado("jchooy", "passwrd", "Jimmy Choo", "44444");
+             Empleado b = new Empleado("fito", "t","Jose Velasquez", "2222");
+             Empleado c = new Empleado("pdelgado", "let", "Peter Delgado", "2222");
+             
             if (gestor.existeEmpleado(a.getNombreusuario())) {
                 out.println("<p>Ya existe un empleado con este nombre en la bbdd</p>");
             } else {
                 gestor.altaEmpleado(a);
                 out.println("<p>Empleado dado de alta</p>");
             }
-//  out.println("\n*************************************************\n");       
-//             Incidencia c = new Incidencia(1, a.getNombreusuario(),b.getNombreusuario(), "23/09/2016, 9:00", "prueba", "urgente");
-//             Incidencia d = new Incidencia(0,"23/09/2016, 9:00", "otra prueba", "Urgente", a.getNombreusuario(), "jvelasquez");
-//             
-//             out.println("<p>Insertando Incidencia...<p>");
-//             gestor.insertarIncidencia(c);
-//             out.println("<p>Incidencia Insertada<p>");
+              out.println("\n*************************************************\n");       
+              
              
-  out.println("\n*************************************************\n");          
-          if (gestor.validarEmpleado(a.getNombreusuario(), a.getPassword())){
+   out.println("\n*************************************************\n");          
+          if (gestor.validarEmpleado("fito", "test")){
               out.println("<p>Empleado Validado<p>");
               
           }
           else {
               out.println("<p>Empleado NO Validado<p>");
           }
-  out.println("\n*************************************************\n");     
+   out.println("\n*************************************************\n");     
             
   
         out.println("<p>Modificando Empleado...<p>");
-        gestor.modificarEmpleado(c);
+        gestor.modificarEmpleado(b);
         out.println("<p>Empleado Modificado<p>");
   
-  
-  
+     out.println("\n*************************************************\n");     
+   
+     out.println("<p>Modificando password...<p>");
+     b.setPassword("test");
+     gestor.modificarpasswordEmpleado(b);
+     out.println("<p>Password Modificado...<p>");
+     
+     out.println("\n*************************************************\n");     
+
+     out.println("<p>Borrando Empleado...<p>");
+     gestor.borrarEmpleado(c);
+     out.println("<p>Empleado Borrado...<p>");
+     
+     out.println("\n*************************************************\n");     
+     
+     out.println("<p>Buscando Incidencia por ID...<p>");
+     
+     
+     
+        List<Incidencia> i = gestor.obtenerIncidenciaById(1);
+        for (Incidencia j : i) {
+                out.println("<p>" + j + "</p>");
+            }             
+        System.out.println("Datos de la incidencia");
+        System.out.println(i);
+        System.out.println("\n*************************************************\n");
+     
+          Incidencia d = new Incidencia(4, a, b, "23/09/2016, 9:00", "test", "urgente");
+//        Incidencia e = new Incidencia(2,b, a, "23/09/2016, 9:00", "otra prueba", "urgente");
+             
+             out.println("<p>Insertando Incidencia...<p>");
+             gestor.insertarIncidencia(d);
+             out.println("<p>Incidencia Insertada<p>");
+        
             out.println("</body>");
             out.println("</html>");
         }

@@ -36,13 +36,7 @@ private SimpleDateFormat sdf;
     }
      
      
-     public void insertarIncidencia(Incidencia a){
-         EntityManager em = emf.createEntityManager();
-            em.persist(a);
-            em.flush();
-            em.close();
-         
-     }
+     
      
      public void altaEmpleado(Empleado c) {
         EntityManager em = emf.createEntityManager();
@@ -65,20 +59,28 @@ private SimpleDateFormat sdf;
      public boolean validarEmpleado(String usr, String psswd) {
         EntityManager em = emf.createEntityManager();
         Empleado d = em.find(Empleado.class, usr);
+        
+        
         boolean ok;
         if (d != null) {
-            if (d.getPassword().equalsIgnoreCase(usr)) {
-                Historial h = new Historial(0, "I", sdf.format(new Date()), d);
+            if (d.getPassword().equalsIgnoreCase(psswd)) {
+                
+               
+                Historial h = new Historial("I", "01/12/2016,8:00",d);
+                em.persist(h); 
                 ok = true;
+                
+           
+                
             } else {
                 ok = false;
             }
         } else {
             ok = false;
         }
-        
+       
        em.close();
-       return d != null;
+       return ok;
     }
      
      public void modificarEmpleado(Empleado c) {
@@ -96,8 +98,75 @@ private SimpleDateFormat sdf;
         em.close();
     }
      
-     
+      public void modificarpasswordEmpleado(Empleado c) {
+        EntityManager em = emf.createEntityManager();
+        Empleado aux = em.find(Empleado.class, c.getNombreusuario());
+        if (aux != null) {
+            
+            aux.setPassword(c.getPassword());
+           
+           
+            em.persist(aux);
+            em.flush();
+        }
+        em.close();
+      }
+        
+        
+        public void borrarEmpleado(Empleado c) {
+        EntityManager em = emf.createEntityManager();
+        Empleado aux = em.find(Empleado.class, c.getNombreusuario());
+        if (aux != null) {
+            em.remove(aux);
+            em.flush();
+        }
+        em.close();
+    }
+  
+
+        
+        public List<Incidencia> obtenerIncidenciaById(int id) {
+       
+            EntityManager em = emf.createEntityManager();
+            Query q = em.createQuery("SELECT i FROM Incidencia i WHERE i.idincidencia = :idincidencia");
+            q.setParameter("idincidencia", id);
+            List<Incidencia> testid = q.getResultList();
+            return testid;
+            
+        }
+    
+        
+        public void insertarIncidencia(Incidencia a){
+         EntityManager em = emf.createEntityManager();
+         em.persist(a);
+         
+         if (a.getTipo().equalsIgnoreCase("urgente")){
+             
+             Historial h = new Historial("U", "31/12/2016, 18:54", a.getOrigen());
+             em.persist(h);
+         }
+           
+           em.flush();
+           em.close();
+         
+     }
+        
+        
+        
+        
+  
+        
+        
+}    
+        
+        
+        
+        
+        
+        
+        
+
      
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-}
+

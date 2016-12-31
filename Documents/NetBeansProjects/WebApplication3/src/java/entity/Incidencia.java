@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Incidencia.findAll", query = "SELECT i FROM Incidencia i"),
-    @NamedQuery(name = "Incidencia.findByIdincidencia", query = "SELECT i FROM Incidencia i WHERE i.idincidencia = :idincidencia"),
+    @NamedQuery(name = "Incidencia.findByidincidencia", query = "SELECT i FROM Incidencia i WHERE i.idincidencia = :idincidencia"),
     @NamedQuery(name = "Incidencia.findByFechahora", query = "SELECT i FROM Incidencia i WHERE i.fechahora = :fechahora"),
     @NamedQuery(name = "Incidencia.findByTipo", query = "SELECT i FROM Incidencia i WHERE i.tipo = :tipo")})
 public class Incidencia implements Serializable {
@@ -62,6 +62,7 @@ public class Incidencia implements Serializable {
     @ManyToOne(optional = false)
     private Empleado destino;
     
+    
     public Incidencia() {
     }
 
@@ -69,8 +70,11 @@ public class Incidencia implements Serializable {
         this.idincidencia = idincidencia;
     }
 
-    public Incidencia(Integer idincidencia, String origen, String destino, String fechahora, String detalle, String tipo) {
-       
+    public Incidencia(Integer idincidencia, Empleado origen, Empleado destino, String fechahora, String detalle, String tipo) {
+        
+        
+        this.origen = origen;
+        this.destino = destino;
         this.idincidencia = idincidencia;
         this.fechahora = fechahora;
         this.detalle = detalle;
@@ -146,12 +150,14 @@ public class Incidencia implements Serializable {
         return true;
     }
 
-    
-
     @Override
     public String toString() {
         return "Incidencia{" + "idincidencia=" + idincidencia + ", fechahora=" + fechahora + ", detalle=" + detalle + ", tipo=" + tipo + ", origen=" + origen + ", destino=" + destino + '}';
     }
+
+    
+
+    
    
     
 }
