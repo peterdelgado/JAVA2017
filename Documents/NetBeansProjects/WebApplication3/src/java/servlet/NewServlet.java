@@ -19,7 +19,7 @@ import entity.Empleado;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import entity.Historial;
-import entity.Ranking;
+
 /**
  *
  * @author pedro
