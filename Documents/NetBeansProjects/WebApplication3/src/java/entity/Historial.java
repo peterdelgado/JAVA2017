@@ -125,7 +125,9 @@ public class Historial implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Historial[ idevento=" + idevento + " ]";
+        return "Historial{" + "idevento=" + idevento + ", tipo=" + tipo + ", fechahora=" + fechahora + ", empleado=" + empleado + '}';
     }
+
+    
     
 }

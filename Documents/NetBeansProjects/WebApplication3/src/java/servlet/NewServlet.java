@@ -18,6 +18,8 @@ import javax.ejb.EJB;
 import entity.Empleado;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import entity.Historial;
+import entity.Ranking;
 /**
  *
  * @author pedro
@@ -68,13 +70,13 @@ public class NewServlet extends HttpServlet {
               
              
    out.println("\n*************************************************\n");          
-          if (gestor.validarEmpleado("fito", "test")){
-              out.println("<p>Empleado Validado<p>");
-              
-          }
-          else {
-              out.println("<p>Empleado NO Validado<p>");
-          }
+//          if (gestor.validarEmpleado("fito", "test")){
+//              out.println("<p>Empleado Validado<p>");
+//              
+//          }
+//          else {
+//              out.println("<p>Empleado NO Validado<p>");
+//          }
    out.println("\n*************************************************\n");     
             
   
@@ -105,17 +107,63 @@ public class NewServlet extends HttpServlet {
         for (Incidencia j : i) {
                 out.println("<p>" + j + "</p>");
             }             
-        System.out.println("Datos de la incidencia");
-        System.out.println(i);
-        System.out.println("\n*************************************************\n");
+        out.println("<p>Datos de la incidencia<p>");
+        out.println(i);
+        out.println("\n*************************************************\n");
      
-          Incidencia d = new Incidencia(4, a, b, "23/09/2016, 9:00", "test", "urgente");
-//        Incidencia e = new Incidencia(2,b, a, "23/09/2016, 9:00", "otra prueba", "urgente");
+        Incidencia d = new Incidencia(8, a, b, "23/09/2016, 9:00", "test", "urgente");
+        Incidencia e = new Incidencia(11,b, a, "23/09/2016, 9:00", "otra prueba", "urgente");
              
-             out.println("<p>Insertando Incidencia...<p>");
-             gestor.insertarIncidencia(d);
-             out.println("<p>Incidencia Insertada<p>");
+//        out.println("<p>Insertando Incidencia...<p>");
+//        gestor.insertarIncidencia(e);
+//        out.println("<p>Incidencia Insertada<p>");
         
+        
+        out.println("\n*************************************************\n");
+         
+        out.println("<p>Incidenca de un Empleado por Destino<p>");
+         
+         List<Incidencia> p = gestor.incidenciasByDestino(b);
+         
+         for (Incidencia l : p)
+             out.println("<p>" + l + "</p>");
+       
+       out.println("\n*************************************************\n");
+       
+       
+       out.println("<p>Incidenca de un Empleado Concreto<p>");
+       
+       List<Incidencia> r = gestor.IncidenciaEmpleadoConcreto(a);
+       
+       for (Incidencia k : r)
+             out.println("<p>" + k + "</p>");
+       
+      
+       
+        out.println("<p>Ultimo login de un empleado concreto:</p>");
+        
+        List<Historial> z = gestor.lastLogin(b);
+         for (Historial x : z)
+             out.println("<p>" + x + "</p>");
+       
+        out.println("\n*************************************************\n");
+            
+//         
+//        for (Object[] result : results) {
+////      System.out.println("Country: " + result[0] + ", Capital: " + result[1]);
+//  }
+      
+        
+        out.println("<p>Ranking de usuarios por incidencias urgentes creadas</p>");
+        List<Object[]> ranking = gestor.rankingIncidencias();
+        out.println("<p>Posición\t Empleado\t Num. Incidencias<p>");
+        for (Object[] m : ranking) {
+            int pos = ranking.indexOf(m) + 1;
+            out.println(pos + "\t \t" + m[0] + "\t \t " + m[1]);
+        }
+        out.println("\n*************************************************\n"); 
+         
+         
             out.println("</body>");
             out.println("</html>");
         }

@@ -17,6 +17,8 @@ import entity.Empleado;
 import java.util.Date;
 import entity.Historial;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import entity.Ranking;
 /**
  *
  * @author pedro
@@ -151,18 +153,58 @@ private SimpleDateFormat sdf;
          
      }
         
+        public List<Incidencia> incidenciasByDestino(Empleado e) {
         
-        
-        
+          EntityManager em = emf.createEntityManager();
+          Query q = em.createQuery("SELECT i FROM Incidencia i WHERE i.destino = :destino");
+          Historial h = new Historial("C", "31/12/2017, 18:54", e);
+          q.setParameter("destino", e);
+          List<Incidencia> testid1 = q.getResultList();
+          return testid1;
   
         
         
 }    
         
+        public List<Incidencia> IncidenciaEmpleadoConcreto(Empleado nombre) {
+        EntityManager em = emf.createEntityManager();
+          Query q = em.createQuery("SELECT i FROM Incidencia i WHERE i.origen = :origen");
+          
+          q.setParameter("origen", nombre);
+          List<Incidencia> testid2 = q.getResultList();
+          return testid2;
+  
+       
+    }
         
+       
+     public List<Historial> lastLogin(Empleado e){
+         
+         EntityManager em = emf.createEntityManager();
+         Query q = em.createQuery("SELECT h FROM Historial h WHERE h.tipo = :tipo AND" + " h.empleado = :empleado");
+         q.setParameter("tipo", "I");
+         q.setParameter("empleado", e);
+         
+         List<Historial> testLog = q.getResultList();
+         return testLog;
+         
+     }   
         
+//   "SELECT m FROM Professor m WHERE (SELECT COUNT(e) "
+//  + "FROM Professor e WHERE e.manager = m) > 0")
+     
+     
+     public List<Object[]> rankingIncidencias() {
+         EntityManager em = emf.createEntityManager();
+         Query q = em.createQuery("SELECT h.empleado, COUNT(h.empleado) FROM Historial h WHERE h.tipo =:tipo GROUP BY h.empleado ORDER BY COUNT(h.empleado)DESC ");
+         q.setParameter("tipo", "U");
+         return q.getResultList();
+    }
+     
+     
+     
         
-        
+}       
         
         
 
