@@ -159,10 +159,25 @@ public class NewServlet extends HttpServlet {
         out.println("<p>Posición\t Empleado\t Num. Incidencias<p>");
         for (Object[] m : ranking) {
             int pos = ranking.indexOf(m) + 1;
-            out.println(pos + "\t \t" + m[0] + "\t \t " + m[1]);
+            out.println("<p>"+pos + "\t \t" + m[0] + "\t \t " + m[1]+"<p>");
         }
+        
+        
         out.println("\n*************************************************\n"); 
+//        
+        
          
+        
+        
+        
+        out.println("<p>Posición del empleado " + a.getNombreusuario() + " en el ranking</p>");
+        int pos = gestor.posRanking(a);
+        if (pos < 0) {
+            out.println("</p>El empleado no está en el ranking.</p>");
+        } else {
+            out.println("<p>Posición: " + pos+ "</p>");
+        }
+        System.out.println("\n*************************************************\n");
          
             out.println("</body>");
             out.println("</html>");

@@ -201,7 +201,22 @@ private SimpleDateFormat sdf;
          q.setParameter("tipo", "U");
          return q.getResultList();
     }
-     
+    
+//     for (Object[] m : ranking) {
+//            int pos = ranking.indexOf(m) + 1;
+//            out.println("<p>"+pos + "\t \t" + m[0] + "\t \t " + m[1]+"<p>");
+//        }
+     public int posRanking(Empleado e) {
+       List<Object[]> ranking = rankingIncidencias();
+        for (Object[] o : ranking) {
+           
+            if (o[0].equals(e)) {
+            return ranking.indexOf(o) + 1;
+            }
+       
+        }
+        return 3;
+    }
      
      
         
